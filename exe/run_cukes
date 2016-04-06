@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+set -e
+
+files=$(find features -name *.feature | xargs)
+echo "Running $files"
+bundle exec cucumber $files --format rerun --out cucumber.results
