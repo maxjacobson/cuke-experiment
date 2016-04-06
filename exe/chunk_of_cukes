@@ -6,9 +6,12 @@ files=$(find features -name *.feature | exe/splitter | xargs)
 echo "Running $files"
 
 # run the cukes
-bundle exec cucumber $files --format rerun --out cucumber.results &&
-  (echo "cukes passed on first run"; exit 0) ||
-  CUCUMBER_EXIT_STATUS=$?
+bundle exec cucumber $files --format rerun --out cucumber.results || CUCUMBER_EXIT_STATUS=$?
+
+if [ -z $CUCUMBER_EXIT_STATUS ]; then
+  echo "I guess it passed on first run!!"
+  exit 0
+fi
 
 if [ $CUCUMBER_EXIT_STATUS -eq "1" ]; then
   echo "some amount of cukes failed"
@@ -18,6 +21,6 @@ if [ $CUCUMBER_EXIT_STATUS -eq "1" ]; then
   exe/rerun_failed_cukes ||
   exe/rerun_failed_cukes
 else
-  echo "something more grievous went wrong... not going to rerun"
+  echo "something more grievous went wrong because cucumber exited with $CUCUMBER_EXIT_STATUS... not going to rerun"
   exit $CUCUMBER_EXIT_STATUS
 fi
