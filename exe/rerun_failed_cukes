@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# if any tests failed and ought to be rerun
+if [[ -s cucumber.results ]]; then
+  echo "Rerunning $(cat cucumber.results | xargs)"
+  # writing results of rerun to a second file because otherwise cucumber doesn't
+  # understand that it should rerun the ones in the file and also write to the
+  # same file
+  bundle exec cucumber --format rerun --out cucumber.results2 @cucumber.results
+  mv cucumber.results2 cucumber.results
+
+  # if any are still failing
+  if [[ -s cucumber.results ]]; then
+    exit 1
+  else
+    # great, All green now
+    exit 0
+  fi
+fi

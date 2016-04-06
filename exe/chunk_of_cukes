@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+set -e
+
+files=$(find features -name *.feature | exe/splitter | xargs)
+echo "Running $files"
+
+# run the cukes
+bundle exec cucumber $files --format rerun --out cucumber.results &&
+  (echo "cukes passed on first run"; exit 0) ||
+  (cucumber_exit_status=$?)
+
+if [[ $cucumber_exit_status -eq 1 ]]; then
+  echo "some amount of cukes failed"
+  exe/rerun_failed_cukes ||
+  exe/rerun_failed_cukes ||
+  exe/rerun_failed_cukes ||
+  exe/rerun_failed_cukes ||
+  exe/rerun_failed_cukes
+else
+  echo "something more grievous went wrong... not going to rerun"
+  exit $cucumber_exit_status
+fi

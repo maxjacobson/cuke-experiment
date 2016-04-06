@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+containers_count = ENV.fetch('CIRCLE_NODE_TOTAL').to_i
+container_index = ENV.fetch('CIRCLE_NODE_INDEX').to_i
+
+files = STDIN.each_line.select.with_index do |_, file_index|
+  file_index % containers_count == container_index
+end
+
+puts files
