@@ -11,9 +11,9 @@ When(/^I am here$/) do
 end
 
 Then(/^I am where I am$/) do
-  raise 'hell' unless @i.location == @i.location
+  raise 'expected to be where I am' unless @i.location == @i.location
 end
 
 Then(/^I am not where I am$/) do
-  raise 'hell' if @i.location == @i.location
+  raise 'expected not to be where I am' if @i.location == @i.location
 end
